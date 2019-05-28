@@ -11,8 +11,8 @@ import matplotlib.pyplot as plt
 """
 USER CONFIG:
 """
-# The GeckoCIRCUITS simulation file. Make sure to provide an absolute path
-SIM_FILE_PATH = "/home/mario/PyGecko/example.ipes"
+# The GeckoCIRCUITS simulation file. Make sure to provide an absolute path (this is taken care of by the script below)
+SIM_FILE_PATH = "example.ipes"
 # Gecko communicates using sockets. Provide a port:
 GECKOPORT = 43036
 # The example file uses a java-block (see example.ipes) to export simulated data. It creates a file "GeckoExport<N>.txt,
@@ -27,10 +27,11 @@ SCRIPT IMPLEMENTATION:
 """
 # Get the current path of GeckoCIRCUITS:
 curdir = os.path.dirname(os.path.abspath(__file__))
-geckodir = curdir + "/GeckoCIRCUITS/GeckoCIRCUITS.jar"
+geckopath = curdir + "/GeckoCIRCUITS/GeckoCIRCUITS.jar"
+simfilepath = curdir + "/" + SIM_FILE_PATH
 
 # For java. This must be before the jnius-imports:
-os.environ['CLASSPATH'] = geckodir
+os.environ['CLASSPATH'] = geckopath
 
 try:
     from jnius import autoclass
@@ -50,7 +51,8 @@ JString = autoclass('java.lang.String')
 ginst = Inst.startNewRemoteInstance(GECKOPORT)
 
 # Open the simulation file. Use java-strings:
-fname = JString(SIM_FILE_PATH)
+print(simfilepath)
+fname = JString(simfilepath)
 ginst.openFile(fname)
 
 # Set the global parameters in the simulation file: These parameters must be defined in Tools->Set Parameters in
